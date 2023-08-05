@@ -1,0 +1,6 @@
+version: '3'
+services:
+  delivery-client:
+    image: "adriancosmin18/delivery-platform-client:v4"
+    ports:
+      - "80:80"
