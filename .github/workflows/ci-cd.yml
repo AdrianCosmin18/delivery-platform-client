@@ -65,16 +65,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Beanstalk Deploy
-#        uses: einaregilsson/beanstalk-deploy@ebe3476a4ce991d54336935e75e78dd9d86f9408
-#        with:
-#          aws_access_key: ${{ secrets.AWS_ACCES_KEY_ID }}
-#          aws_secret_key: ${{ secrets.AWS_SECRET_ACCES_KEY }}
-#          region: us-east-1
-#          environment_name:  online-school-client
-#          application_name:  online-school-client
-#          deployment_package: ./elasticbeanstalk/docker-compose.yml
-#          version_label: ${{ env.BUILD_NUMBER }}
-#          version_description: Version ${{ env.BUILD_NUMBER }} deployed via github actions ${{ github.sha }}
-#          wait_for_deployment: 120
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@ebe3476a4ce991d54336935e75e78dd9d86f9408
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCES_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCES_KEY }}
+          region: us-east-1
+          environment_name:  Delivery-app-ui-env-env
+          application_name:  Delivery-app-ui-env
+          deployment_package: ./elasticbeanstalk/docker-compose.yml
+          version_label: ${{ env.BUILD_NUMBER }}
+          version_description: Version ${{ env.BUILD_NUMBER }} deployed via github actions ${{ github.sha }}
+          wait_for_deployment: 120
 
