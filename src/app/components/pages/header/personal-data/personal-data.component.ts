@@ -5,7 +5,7 @@ import {CustomerService} from "../../../../services/customer.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Constants, ErrorMessages} from "../../../../constants/constants";
 import {MessageService} from "primeng/api";
-import {Observable} from "rxjs";
+import {endWith, Observable, startWith, Subject} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../../store/app.reducer";
 import {NotificationService} from "../../../../services/notification.service";
@@ -21,6 +21,7 @@ import {LoadingScreenService} from "../../../../services/loading-screen.service"
 })
 export class PersonalDataComponent implements OnInit {
   public user!: User;
+  public user$!: Observable<User>;
   public form!: FormGroup;
   private auth$!: Observable<{ email: string; firstName: string; loggedIn: boolean }>;
   private email!: string;
@@ -44,18 +45,11 @@ export class PersonalDataComponent implements OnInit {
   }
 
   getCurrentUser(){
-
-    this.auth$ = this.store.select("auth");
-    this.auth$.subscribe(value => {
-      this.email = value.email;
-
-      this.userService.getCustomerByEmail(this.email).subscribe({
-        next: value => {
-          this.user = value;
-          this.putUserInForm();
-        }
-      })
-    })
+    this.user$ = this.userService.getCustomer();
+    this.user$.subscribe(value => {
+      this.user = value as User;
+      this.putUserInForm();
+    });
   }
 
   initForm(){
@@ -88,7 +82,10 @@ export class PersonalDataComponent implements OnInit {
 
     this.loadingScreenService.setLoading(true);
     // @ts-ignore
-    this.userService.updateCustomerByEmail(this.email, user).subscribe({
+    this.userService.updateCustomerByEmail(this.email, user).pipe(
+      // startWith(this.loadingScreenService.setLoading(true)),
+      // endWith(this.loadingScreenService.setLoading(false))
+    ).subscribe({
       next: () => {
         this.loadingScreenService.setLoading(false);
         // this.messageService.add({severity:'success', summary:'Datele au fost salvate'});

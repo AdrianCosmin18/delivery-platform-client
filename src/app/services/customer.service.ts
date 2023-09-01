@@ -21,8 +21,8 @@ export class CustomerService {
   constructor(private http: HttpClient) { }
 
 
-  getCustomerByEmail(email: string): Observable<User>{
-    let url = `${this.path}/get-user/${email}`;
+  getCustomer(): Observable<User>{
+    let url = `${this.path}/get-user`;
     console.log(url);
     return this.http.get<User>(url)
       .pipe(catchError(this.handleError));
@@ -52,8 +52,8 @@ export class CustomerService {
       .pipe(catchError(this.handleError));
   }
 
-  addAddress(email: string, addressDTO: Address): Observable<void>{
-    let url = `${this.path}/add-address?email=${email}`;
+  addAddress(addressDTO: Address): Observable<void>{
+    let url = `${this.path}/add-address`;
     return this.http.post<void>(url, addressDTO)
       .pipe(catchError(this.handleError));
   }

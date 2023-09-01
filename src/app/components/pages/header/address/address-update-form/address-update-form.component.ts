@@ -7,7 +7,7 @@ import {CityService} from "../../../../../services/city.service";
 import {CustomerService} from "../../../../../services/customer.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../../../store/app.reducer";
-import {Observable} from "rxjs";
+import {endWith, Observable, startWith} from "rxjs";
 import {MessageService} from "primeng/api";
 import {ErrorMessages, FormType} from "../../../../../constants/constants";
 import {LoadingScreenService} from "../../../../../services/loading-screen.service";
@@ -148,25 +148,19 @@ export class AddressUpdateFormComponent implements OnInit {
       cityName: this.form.get("cities")?.value
     };
 
-    console.log(newAddress);
+    this.loadingScreenService.setLoading(true);
+    this.userService.addAddress(newAddress as Address).subscribe({
+      next: () => {
+        this.loadingScreenService.setLoading(false);
+        const message = 'Adresă nouă adaugată';
+        this.cancelDialogService(message);
+      },
 
-    this.auth$ = this.store.select("auth");
-    this.auth$.subscribe(value => {
-      const email = value.email;
-      this.loadingScreenService.setLoading(true);
-      this.userService.addAddress(email, newAddress as Address).subscribe({
-        next: () => {
-          this.loadingScreenService.setLoading(false);
-          const message = 'Adresă nouă adaugată';
-          this.cancelDialogService(message);
-        },
-
-        error: err => {
-          this.loadingScreenService.setLoading(false);
-          if(err === ErrorMessages.USER_ALREADY_OWN_ADDRESS_EXCEPTION){
-            this.messageService.add({severity: 'error', summary: `Ai deja această adresă înregistrată`})}
-        }
-      })
+      error: err => {
+        this.loadingScreenService.setLoading(false);
+        if(err === ErrorMessages.USER_ALREADY_OWN_ADDRESS_EXCEPTION){
+          this.messageService.add({severity: 'error', summary: `Ai deja această adresă înregistrată`})}
+      }
     })
   }
 
